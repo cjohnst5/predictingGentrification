@@ -1,0 +1,32 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_20_10_48.log
+  log type:  text
+ opened on:  18 Nov 2017, 20:10:48
+    --------------------------------------------------------------------------------------------------------------------------------- end paths ---
+  - cleanNHGIS, county("San Francisco County")
+    -------------------------------------------------------------------------------------------------------------------------- begin cleanNHGIS ---
+    - syntax[, county(string)]
+    - tempfile household race housing incomeEducation age
+    - import delimited "$dataRAW/NHGIS/nhgis0013_csv/nhgis0013_ds172_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0013_csv/nhgis0013_ds172_2010
+> _tract.csv", clear
+(98 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename h76001 totalPop
+    - egen maleUnder18 = rowtotal(h76003-h76006 h76027-h76030)
+    ---------------------------------------------------------------------------------------------------------------------------- end cleanNHGIS ---
+  ------------------------------------------------------------------------------------------------------------------------------------ end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_20_10_48.log
+  log type:  text
+ closed on:  18 Nov 2017, 20:10:49
+---------------------------------------------------------------------------------------------------------------------------------------------------

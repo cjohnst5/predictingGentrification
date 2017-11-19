@@ -1,0 +1,22 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_18_15_28.log
+  log type:  text
+ opened on:  18 Nov 2017, 18:15:28
+    ----------------------------------------------------------------------------------------------------------------------------------- end paths ---
+  - cleanNHGIS
+    ---------------------------------------------------------------------------------------------------------------------------- begin cleanNHGIS ---
+    - import delimited "$dataRAW/NHGIS/nhgis0013_csv/nhgis0013_ds181_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0013_csv/nhgis0013_ds181_2010_t
+> ract.csv", clear
+(34 vars, 73185 obs)
+    ------------------------------------------------------------------------------------------------------------------------------ end cleanNHGIS ---
+  -------------------------------------------------------------------------------------------------------------------------------------- end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_18_15_28.log
+  log type:  text
+ closed on:  18 Nov 2017, 18:15:32
+-----------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,29 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Daniel and Carla\Dropbox\projects\predictingGentrification\build\code\logFiles/build18_Nov_2017_18_09_44.log
+  log type:  text
+ opened on:  18 Nov 2017, 18:09:44
+    ----------------------------------------------------------------------------------------------------------------------------------- end paths ---
+  - paths
+    --------------------------------------------------------------------------------------------------------------------------------- begin paths ---
+    - cd "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code"
+C:\Users\Daniel and Carla\Dropbox\projects\predictingGentrification\build\code
+    - global dataRAW "../dataRAW/"
+    - global dataCLEAN "../dataCLEAN/"
+    - local c_date = c(current_date)
+    - local c_time = c(current_time)
+    - local c_time_date = "`c_date'"+"_"+"`c_time'"
+    = local c_time_date = "18 Nov 2017"+"_"+"18:09:44"
+    - local time_string = subinstr("`c_time_date'", ":", "_", .)
+    = local time_string = subinstr("18 Nov 2017_18:09:44", ":", "_", .)
+    - local time_string = subinstr("`time_string'", " ", "_", .)
+    = local time_string = subinstr("18 Nov 2017_18_09_44", " ", "_", .)
+    - local c_date = c(current_date)
+    - local c_time = c(current_time)
+    - local c_time_date = "`c_date'"+"_"+"`c_time'"
+    = local c_time_date = "18 Nov 2017"+"_"+"18:09:44"
+    - local time_string = subinstr("`c_time_date'", ":", "_", .)
+    = local time_string = subinstr("18 Nov 2017_18:09:44", ":", "_", .)
+    - local time_string = subinstr("`time_string'", " ", "_", .)
+    = local time_string = subinstr("18 Nov 2017_18_09_44", " ", "_", .)
+    - capture log close

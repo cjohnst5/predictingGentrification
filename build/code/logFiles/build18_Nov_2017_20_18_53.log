@@ -1,0 +1,227 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_20_18_53.log
+  log type:  text
+ opened on:  18 Nov 2017, 20:18:53
+    --------------------------------------------------------------------------------------------------------------------------------- end paths ---
+  - cleanNHGIS, county("San Francisco County")
+    -------------------------------------------------------------------------------------------------------------------------- begin cleanNHGIS ---
+    - syntax[, county(string)]
+    - tempfile household race housing incomeEducation age
+    - import delimited "$dataRAW/NHGIS/nhgis0017_csv/nhgis0017_ds172_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0017_csv/nhgis0017_ds172_2010
+> _tract.csv", clear
+(47 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename h7x001 totalPop
+    - rename h7x002 white
+    - rename h7x003 black
+    - rename h7x005 asian
+    - gen prcntWhite = white/totalPop
+(2 missing values generated)
+    - gen prcntBlack = black/totalPop
+(2 missing values generated)
+    - gen prcntAsian = asian/totalPop
+(2 missing values generated)
+    - keep year gisjoin tractID county totalPop white black asian prcntWhite prcntBlack prcntAsian
+    - save `race', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp, replace
+(note: file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp not found)
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0017_csv/nhgis0017_ds176_20105_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0017_csv/nhgis0017_ds176_2010
+> 5_2010_tract.csv", clear
+(43 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename jmke001 totalPop
+    - rename jmke003 hisp
+    - gen prcntHisp = hisp/totalPop
+(2 missing values generated)
+    - keep tractID prcntHisp
+    - merge 1:1 tractID using `race', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               197  
+    -----------------------------------------
+    - save `race', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp, replace
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0016_csv/nhgis0016_ds181_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0016_csv/nhgis0016_ds181_2010
+> _tract.csv", clear
+(53 vars, 73185 obs)
+    - keep if state == "California"
+(65,185 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,805 observations deleted)
+    - rename tracta tractID
+    - rename lhc001 totalHouseholds
+    - rename lhc002 husWifeFam
+    - rename lhc003 husWifeChild
+    - rename lhc016 snglMom
+    - gen prcntSnglMom = snglMom/totalHouseholds
+    - gen prcntHusWifeFam = husWifeFam/totalHouseholds
+    - gen prcntHusWifeChild = husWifeChild/totalHouseholds
+    - keep tractID totalHouseholds husWifeFam husWifeChild snglMom prcnt*
+    - save `household', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp, replace
+(note: file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp not found)
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0015_csv/nhgis0015_ds172_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0015_csv/nhgis0015_ds172_2010
+> _tract.csv", clear
+(46 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename ife001 totHousingUnits
+    - rename ife002 totOccUnits
+    - rename ife003 totVacUnits
+    - rename iff004 totRentUnits
+    - gen occRate = totOccUnits/totHousingUnits
+(1 missing value generated)
+    - gen prcntRentOcc = totRentUnits/totHousingUnits
+(1 missing value generated)
+    - keep tractID totHousingUnits totOccUnits totVacUnits totRentUnits occRate prcntRentOcc
+    - save `housing', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000003.tmp, replace
+(note: file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000003.tmp not found)
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000003.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0018_csv/nhgis0018_ds176_20105_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0018_csv/nhgis0018_ds176_2010
+> 5_2010_tract.csv", clear
+(39 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename joim001 medianInc
+    - keep tractID medianInc
+    - save `incomeEducation'
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0014_csv/nhgis0014_ds176_20105_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0014_csv/nhgis0014_ds176_2010
+> 5_2010_tract.csv", clear
+(107 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename jn9e002 totalPop
+    - rename jn9e015 maleBachelorDeg
+    - rename jn9e016 maleMastersDeg
+    - rename jn9e017 maleProfDeg
+    - rename jn9e018 malePhD
+    - rename jn9e032 femaleBachelorDeg
+    - rename jn9e033 femaleMastersDeg
+    - rename jn9e034 femaleProfDeg
+    - rename jn9e035 femalePhD
+    - gen bachelorDeg = maleBachelorDeg + femaleBachelorDeg
+    - gen mastersDeg = maleMastersDeg + femaleMastersDeg
+    - gen profDeg = maleProfDeg + femaleProfDeg
+    - gen phD = malePhD + femalePhD
+    - gen prcntHighEdu = (bachelorDeg + mastersDeg + profDeg + phD)/totalPop
+(2 missing values generated)
+    - keep tractID bachelorDeg mastersDeg profDeg phD prcntHighEdu
+    - merge 1:1 tractID using `incomeEducation', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               197  
+    -----------------------------------------
+    - save `incomeEducation', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp, replace
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp saved
+    - import delimited "$dataRAW/NHGIS/nhgis0013_csv/nhgis0013_ds172_2010_tract.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW//NHGIS/nhgis0013_csv/nhgis0013_ds172_2010
+> _tract.csv", clear
+(98 vars, 74002 obs)
+    - keep if state == "California"
+(65,945 observations deleted)
+    - keep if county == "`county'"
+    = keep if county == "San Francisco County"
+(7,860 observations deleted)
+    - rename tracta tractID
+    - rename h76001 totalPop
+    - egen under18 = rowtotal(h76003-h76006 h76027-h76030)
+    - egen age18_29 = rowtotal(h76007-h76011 h76031-h76035)
+    - egen age30_44 = rowtotal(h76012-h76014 h76036-h76038)
+    - egen age44_64 = rowtotal(h76015-h76019 h76039-h76043)
+    - egen age65plus = rowtotal(h76020-h76025 h76044-h76049)
+    - keep tractID under18 age18_29 age30_44 age44_64 age65plus
+    - foreach dataSet in `race' `household' `housing' `incomeEducation'{
+    = foreach dataSet in C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp C:\Users\DANIEL~
+> 2\AppData\Local\Temp\ST_07000003.tmp C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp{
+    - merge 1:1 tractID using `dataSet', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000002.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               197  
+    -----------------------------------------
+    - }
+    - merge 1:1 tractID using `dataSet', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             2
+        from master                         2  
+        from using                          0  
+
+    matched                               195  
+    -----------------------------------------
+    - }
+    - merge 1:1 tractID using `dataSet', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000003.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               197  
+    -----------------------------------------
+    - }
+    - merge 1:1 tractID using `dataSet', nogen
+    = merge 1:1 tractID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000004.tmp, nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               197  
+    -----------------------------------------
+    - }
+    ---------------------------------------------------------------------------------------------------------------------------- end cleanNHGIS ---
+  ------------------------------------------------------------------------------------------------------------------------------------ end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_20_18_53.log
+  log type:  text
+ closed on:  18 Nov 2017, 20:19:02
+---------------------------------------------------------------------------------------------------------------------------------------------------
