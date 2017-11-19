@@ -1,0 +1,158 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0013_ds173_2010_tract'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             2010
+Geographic level: Census Tract (by State--County)
+Dataset:          2010 Census: SF 1b - PCT & HCT Tables [Tracts & Larger Areas]
+   NHGIS code:    2010_SF1b
+   NHGIS ID:      ds173
+Breakdown(s):     Geographic Subarea:
+                     Total area (00)
+ 
+Tables:
+ 
+1. Husband-wife and Unmarried-partner Households by Sex of Partner by Presence of Related and Own Children Under 18 Years
+   Universe:    Households
+   Source code: PCT15
+   NHGIS code:  IC6
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        COUSUBA:     County Subdivision Code
+        PLACEA:      Place Code
+        TRACTA:      Census Tract Code
+        CONCITA:     Consolidated City Code
+        TRUSTA:      American Indian Area (Off-Reservation Trust Land Only)/Hawaiian Home Land Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        RES_ONLYA:   American Indian Area/Alaska Native Area (Reservation or Statistical Entity Only) Code
+        AITSCEA:     Tribal Subdivision/Remainder Code
+        TTRACTA:     Tribal Census Tract Code
+        ANRCA:       Alaska Native Regional Corporation Code
+        CBSAA:       Metropolitan Statistical Area/Micropolitan Statistical Area Code
+        METDIVA:     Metropolitan Division Code
+        CSAA:        Combined Statistical Area Code
+        NECTAA:      New England City and Town Area Code
+        NECTADIVA:   NECTA Division Code
+        CNECTAA:     Combined New England City and Town Area Code
+        UAA:         Urban Area Code
+        URBRURALA:   Urban/Rural Code
+        CDA:         Congressional District (111th Congress) Code
+        SLDUA:       State Legislative District (Upper Chamber) Code
+        SLDLA:       State Legislative District (Lower Chamber) Code
+        ZCTA5A:      5-Digit Zip Code Tabulation Area Code
+        SUBMCDA:     Subminor Civil Division Code
+        SDELMA:      School District (Elementary)/Remainder Code
+        SDSECA:      School District (Secondary)/Remainder Code
+        SDUNIA:      School District (Unified)/Remainder Code
+        NAME:        Area Name-Legal/Statistical Area Description (LSAD) Term-Part Indicator
+ 
+Breakdown:
+    Geographic Subarea: Total area (00)
+ 
+    Table 1:     Husband-wife and Unmarried-partner Households by Sex of Partner by Presence of Related and Own Children Under 18 Years
+    Universe:    Households
+    Source code: PCT15
+    NHGIS code:  IC6
+        IC6001:      Total
+        IC6002:      Husband-wife households
+        IC6003:      Husband-wife households: Male householder
+        IC6004:      Husband-wife households: Male householder: With related children under 18 years
+        IC6005:      Husband-wife households: Male householder: With related children under 18 years: With own children under 18 years
+        IC6006:      Husband-wife households: Male householder: With related children under 18 years: No own children under 18 years
+        IC6007:      Husband-wife households: Male householder: No related children under 18 years
+        IC6008:      Husband-wife households: Female householder
+        IC6009:      Husband-wife households: Female householder: With related children under 18 years
+        IC6010:      Husband-wife households: Female householder: With related children under 18 years: With own children under 18 years
+        IC6011:      Husband-wife households: Female householder: With related children under 18 years: No own children under 18 years
+        IC6012:      Husband-wife households: Female householder: No related children under 18 years
+        IC6013:      Unmarried-partner households
+        IC6014:      Unmarried-partner households: Male householder and male partner
+        IC6015:      Unmarried-partner households: Male householder and male partner: With related children under 18 years
+        IC6016:      Unmarried-partner households: Male householder and male partner: With related children under 18 years: With own children under 18 years
+        IC6017:      Unmarried-partner households: Male householder and male partner: With related children under 18 years: No own children under 18 years
+        IC6018:      Unmarried-partner households: Male householder and male partner: No related children under 18 years
+        IC6019:      Unmarried-partner households: Male householder and female partner
+        IC6020:      Unmarried-partner households: Male householder and female partner: With related children under 18 years
+        IC6021:      Unmarried-partner households: Male householder and female partner: With related children under 18 years: With own children under 18 years
+        IC6022:      Unmarried-partner households: Male householder and female partner: With related children under 18 years: No own children under 18 years
+        IC6023:      Unmarried-partner households: Male householder and female partner: No related children under 18 years
+        IC6024:      Unmarried-partner households: Female householder and female partner
+        IC6025:      Unmarried-partner households: Female householder and female partner: With related children under 18 years
+        IC6026:      Unmarried-partner households: Female householder and female partner: With related children under 18 years: With own children under 18 years
+        IC6027:      Unmarried-partner households: Female householder and female partner: With related children under 18 years: No own children under 18 years
+        IC6028:      Unmarried-partner households: Female householder and female partner: No related children under 18 years
+        IC6029:      Unmarried-partner households: Female householder and male partner
+        IC6030:      Unmarried-partner households: Female householder and male partner: With related children under 18 years
+        IC6031:      Unmarried-partner households: Female householder and male partner: With related children under 18 years: With own children under 18 years
+        IC6032:      Unmarried-partner households: Female householder and male partner: With related children under 18 years: No own children under 18 years
+        IC6033:      Unmarried-partner households: Female householder and male partner: No related children under 18 years
+        IC6034:      All other households
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* Publications and research reports employing NHGIS data (either tabular or GIS)
+  must cite it appropriately. The citation should include the following:
+
+    Steven Manson, Jonathan Schroeder, David Van Riper, and Steven Ruggles. 
+    IPUMS National Historical Geographic Information System: Version 12.0 [Database]. 
+    Minneapolis: University of Minnesota. 2017. 
+    http://doi.org/10.18128/D050.V12.0
+
+* Publications and research reports employing school attendance areas data
+  (either tabular or GIS) must cite it appropriately. The citation should
+  include the following:
+
+    The College of William and Mary and the Minnesota Population Center.
+    School Attendance Boundary Information System (SABINS): Version 1.0.
+    Minneapolis, MN: University of Minnesota 2011.
+
+* For policy briefs or articles in the popular press, we recommend that you cite the use of NHGIS data as follows:
+
+    IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+* If possible, citations involving school attendance areas should also include
+  the URL for the SABINS site:
+
+    http://www.sabinsdata.org/.
+
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+Printed matter should be sent to:
+
+    NHGIS
+    Minnesota Population Center
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455
+
+Send electronic material to: nhgis@umn.edu
