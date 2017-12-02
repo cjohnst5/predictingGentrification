@@ -1,0 +1,56 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_36_06.log
+  log type:  text
+ opened on:  18 Nov 2017, 21:36:06
+    ------------------------------------------------------------------------------------------------------------------- end paths ---
+  - mergeCleanData
+    -------------------------------------------------------------------------------------------------------- begin mergeCleanData ---
+    - use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+    = use "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censustractsCLEAN.dta", clear
+    - merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+    = merge m:1 tractID using "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//nhgisVariables.dt
+> a", nogen keep(3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               194  
+    -----------------------------------------
+    - rename totalPop totTractPop
+    - bys redfinID: egen totRFPop = sum(totTractPop)
+    - gen popWeight = totTractPop/totRFPop
+    - order totTractPop totRFPop popWeight prcntHisp prcntHigh bachelor
+    - collapse (mean) prcnt* medianInc [w=totTractPop], by(redfinID)
+(analytic weights assumed)
+    - tempfile NHGIS
+    - save `NHGIS', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp, replace
+(note: file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp not found)
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp saved
+    - import delimited "$dataCLEAN/redfinPercentChange.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfinPercentChange.csv"
+> , clear
+(4 vars, 68 obs)
+    - rename redfinid redfinID
+    - merge 1:1 redfinID using `NHGIS'
+    = merge 1:1 redfinID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             1
+        from master                         1  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                                67  (_merge==3)
+    -----------------------------------------
+    ---------------------------------------------------------------------------------------------------------- end mergeCleanData ---
+  ---------------------------------------------------------------------------------------------------------------------- end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_36_06.log
+  log type:  text
+ closed on:  18 Nov 2017, 21:36:06
+-------------------------------------------------------------------------------------------------------------------------------------

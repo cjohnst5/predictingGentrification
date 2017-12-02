@@ -1,0 +1,35 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_32_48.log
+  log type:  text
+ opened on:  18 Nov 2017, 21:32:48
+    ------------------------------------------------------------------------------------------------------------------- end paths ---
+  - mergeCleanData
+    -------------------------------------------------------------------------------------------------------- begin mergeCleanData ---
+    - use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+    = use "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censustractsCLEAN.dta", clear
+    - merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+    = merge m:1 tractID using "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//nhgisVariables.dt
+> a", nogen keep(3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               194  
+    -----------------------------------------
+    - rename totalPop totTractPop
+    - bys redfinID: egen totRFPop = sum(totTractPop)
+    - gen popWeight = totTractPop/totRFPop
+    - order totTractPop totRFPop popWeight prcntHisp prcntHigh bachelor
+    - collapse (mean) prcnt* medianInc [w=totTractPop], by(redfinID)
+(analytic weights assumed)
+    ---------------------------------------------------------------------------------------------------------- end mergeCleanData ---
+  ---------------------------------------------------------------------------------------------------------------------- end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_32_48.log
+  log type:  text
+ closed on:  18 Nov 2017, 21:32:48
+-------------------------------------------------------------------------------------------------------------------------------------

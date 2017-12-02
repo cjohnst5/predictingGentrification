@@ -21,8 +21,9 @@ program define main
     // =============== 0 Comment in/out subprograms you wish to run ================
 	
 
-	cleanNHGIS, county("San Francisco County")
-	
+	*cleanNHGIS, county("San Francisco County")
+	*cleanCrosswalk
+	mergeCleanData
 
 
 	
@@ -47,6 +48,7 @@ program define paths
 	global dataRAW  "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW/"	
 	global dataCLEAN "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN/"
 	global code "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code"
+	global tables "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/analysis/tables"
 	
 	*Creating a string with current date and time
 	local c_date = c(current_date)
@@ -129,6 +131,7 @@ syntax[, county(string)]
 	rename lhc003 husWifeChild
 	rename lhc016 snglMom
 	
+	
 	gen prcntSnglMom = snglMom/totalHouseholds
 	gen prcntHusWifeFam = husWifeFam/totalHouseholds
 	gen prcntHusWifeChild = husWifeChild/totalHouseholds
@@ -176,7 +179,7 @@ syntax[, county(string)]
 	keep if county == "`county'"
 	
 	rename tracta tractID
-	rename jn9e002 totalPop
+	rename jn9e001 totalPop
 	rename jn9e015 maleBachelorDeg
 	rename jn9e016 maleMastersDeg
 	rename jn9e017 maleProfDeg
@@ -188,12 +191,13 @@ syntax[, county(string)]
 	rename jn9e035 femalePhD
 	
 	gen bachelorDeg = maleBachelorDeg + femaleBachelorDeg
-	gen mastersDeg = maleMastersDeg + femaleMastersDeg
+	gen prcntHighEdu = bachelorDeg/totalPop
+	/*gen mastersDeg = maleMastersDeg + femaleMastersDeg
 	gen profDeg = maleProfDeg + femaleProfDeg
 	gen phD = malePhD + femalePhD
-	gen prcntHighEdu = (bachelorDeg + mastersDeg + profDeg + phD)/totalPop
+	gen prcntHighEdu = (bachelorDeg + mastersDeg + profDeg + phD)/totalPop*/
 	
-	keep tractID bachelorDeg mastersDeg profDeg phD prcntHighEdu
+	keep tractID bachelorDeg prcntHighEdu
 	
 	merge 1:1 tractID using `incomeEducation', nogen
 	save `incomeEducation', replace
@@ -212,10 +216,16 @@ syntax[, county(string)]
 	egen under18 = rowtotal(h76003-h76006 h76027-h76030)
 	egen age18_29 = rowtotal(h76007-h76011 h76031-h76035)
 	egen age30_44 = rowtotal(h76012-h76014 h76036-h76038)
-	egen age44_64 = rowtotal(h76015-h76019 h76039-h76043)
+	egen age45_64 = rowtotal(h76015-h76019 h76039-h76043)
 	egen age65plus = rowtotal(h76020-h76025 h76044-h76049)
 	
-	keep tractID under18 age18_29 age30_44 age44_64 age65plus
+	gen prcntUnder18 = under18/totalPop
+	gen prcnt18_29 = age18_29/totalPop
+	gen prcnt30_44 = age30_44/totalPop
+	gen prcnt45_64 = age45_64/totalPop
+	gen prcnt65plus = age65plus/totalPop
+	
+	keep tractID under18 age18_29 age30_44 age45_64 age65plus prcnt*
 
 	foreach dataSet in `race' `household' `housing' `incomeEducation'{
 		merge 1:1 tractID using `dataSet', nogen 	
@@ -226,168 +236,65 @@ end
 
 
 /*---------------------------------------------------------*/
-**** Second Program ****
+**** Cleaning Crosswalk ****
 /*---------------------------------------------------------*/
-capture program drop eitcEligible
-program define eitcEligible
-syntax[, matchIncome(string) randomSample(string) percentSample(integer 5) trips(string) ///
-	purchases(string) years(string) inputDir(string)] 
-	
-	
-	
-	
-	*******Constructing EITC tax tables	
-	use "$dataRAWCarla/eitcTaxTables/statebyhh_eitcparameters.dta", clear
-	rename taxyear year
-	rename stfips fips_state_code
-	rename numchild number_children
-	replace inrate = inrate/100
-	replace outrate = outrate/100
-	drop if year < 2002
-	sort fips_state_code number_children year
-	local genLagged year fedmaxcredit inrate plateaustart_single outrate plateauend_single zero_transfer_single plateaustart_married plateauend_married zero_transfer_married totmaxcredit staterate
-	foreach variab in `genLagged'{
-		by fips_state_code number_children: gen L`variab' = `variab'[_n-2]
-	}
-	keep L* year number_children fips_state_code pce_inflator
-	
-	tempfile eitcParameters
-	save `eitcParameters'
-	
-	
-	**********Constructing EITC eligible variables	
-	//Saving the first and last year of the merged panelists data we used for file name purposes
-	local counter = 0
-	foreach year in `years'{
-		local counter `=`counter'+1'
-		if `counter' == 1{
-			local firstYear = "`year'"
-		}
-		local yearPresent = "`year'"
-	}
-	use "`inputDir'/panelists_RS`randomSample'_PS`percentSample'_T`trip'_P`purchases'_years`firstYear'to`yearPresent'.dta", clear
-	
-	rename panel_year year
-	
-	
-	*impute income as midpoint of income category
-	gen household_income_est = 0
-	replace household_income_est = 2500 if household_income == 3
-	replace household_income_est = 6500 if household_income == 4
-	replace household_income_est = 9000 if household_income == 6
-	replace household_income_est = 11000 if household_income == 8 
-	replace household_income_est = 13500 if household_income == 10
-	replace household_income_est = 17500 if household_income == 11
-	replace household_income_est = 22500 if household_income == 13
-	replace household_income_est = 27500 if household_income == 15
-	replace household_income_est = 32500 if household_income == 16
-	replace household_income_est = 37500 if household_income == 17
-	replace household_income_est = 42500 if household_income == 18
-	replace household_income_est = 47500 if household_income == 19
-	replace household_income_est = 55000 if household_income == 21
-	replace household_income_est = 65000 if household_income == 23
-	replace household_income_est = 85000 if household_income == 26
-	replace household_income_est = 100000 if household_income  >= 27
-	tab household_income_est
-	
-	*Dummy for households with only one head. We will use this variable
-	*to determine tax-filing status (we will not use marital_status variable
-	*anymore). 
-	gen single_head = 0
-	replace single_head = 1 if marital_status != 1
-	//I'm including divorced and widowed in my sample.  
-	replace single_head = 0 if female_head_age != 0 & male_head_age != 0 
-	//About 1/3 of our sample is single
-	
-	*Imputing the number of children
-	gen number_children = 0
-	gen one_family_household = 0
-	replace one_family_household = 1 if type_of_residence == 1 | type_of_residence == 2
-	*Single households with children
-	replace number_children = household_size - 1 if one_family_household == 1 ///
-		& single_head == 1 ///
-		& household_size != 9 ///
-		& age_and_presence_of_children != 9 
-	//Largest tax credit applies to familes with 3 or more kids
-	replace number_children = 3 if number_children > 3 & !missing(number_children)
-		
-	*Married households with children
-	replace number_children = household_size - 2 if one_family_household == 1 ///
-		& single_head == 0 ///
-		& household_size != 9 ///
-		& age_and_presence_of_children != 9 
-	replace number_children = 3 if number_children > 3 & !missing(number_children) 
+capture program drop cleanCrosswalk
+program define cleanCrosswalk
 
-	*Merge Nielsen data with eitc parameters
-	merge m:1 fips_state_code year number_children using `eitcParameters', nogen keep(3)
-
-
+	import delimited "$dataRAW/crosswalks/redfin_censustracts.csv", clear
+	rename id redfinID
+	drop if redfinID == 123
+	rename censustract ct1
+	rename (v4-v11) (ct12 ct13 ct14 ct15 ct16 ct17 ct18 ct19)
+	reshape long ct, i(redfinID redfin) j(index)
+	drop index
+	drop if missing(ct)
+	rename ct tractID
+	*reshape wide redfinID
+	export delimited "$dataCLEAN/redfin_censustractsCLEAN.csv", replace
+	save "$dataCLEAN/redfin_censustractsCLEAN.dta", replace
 	
-	*Calculating federal tax return using income. We are using the tax rules from 2 years before the survey year. 
-	*Single head of households
-	gen federalEITC = 0
-	replace federalEITC = household_income_est*Linrate if household_income_est < Lplateaustart_single & single_head == 1
-	replace federalEITC = Ltotmaxcredit if household_income_est >= Lplateaustart_single ///
-		& household_income_est <=Lplateauend_single & single_head == 1 
-	replace federalEITC = Ltotmaxcredit - Loutrate*(household_income_est - Lplateauend_single) ///
-		if household_income_est > Lplateauend_single ///
-		& household_income_est <=Lzero_transfer_single & single_head == 1
-	*Married head of households
-	replace federalEITC = household_income_est*Linrate ///
-		if household_income_est < Lplateaustart_married & single_head == 0
-	replace federalEITC = Ltotmaxcredit ///
-		if household_income_est >= Lplateaustart_married ///
-		& household_income_est <=Lplateauend_married & single_head == 0 
-	replace federalEITC = Ltotmaxcredit - Loutrate*(household_income_est-Lplateauend_married) ///
-		if household_income_est > Lplateauend_married ///
-		& household_income_est <=Lzero_transfer_married & single_head == 0
-	
-	*Calculating maximum tax return (including state tax return in total)
-	gen totalEITC = federalEITC*(1+Lstaterate/100)
-	
-	*******Calculating maxEITC receipt using education, marital status and number of children. 
-	*Using mother's education as a measure of eligibility
-	gen head_edu = . 
-	replace head_edu = female_head_edu if female_head_edu !=0 
-	//If female education is missing then use male's education 
-	replace head_edu = male_head_edu if female_head_edu == 0 
-	
-	*Determining maximum EITC eligibility, federal and state
-	gen maxFedEITC = 0
-	//a household is EITC eligible if the mother has less than some education
-	//maxchild is the maximum EITC they could get back given the household's
-	//filing status and number of children. 	
-	replace maxFedEITC = Ltotmaxcredit if head_edu <= 4 
-	gen maxTotEITC = maxFedEITC *(1 + Lstaterate/100)
-	
-	***Convertings this to 2010 dollars
-	gen federalEITC2010 = federalEITC*pce_inflator
-	gen maxFedEITC2010 = maxFedEITC*pce_inflator
-	gen maxTotEITC2010 = maxTotEITC*pce_inflator
-	gen totalEITC2010 = totalEITC*pce_inflator
-	
-	**Dropping unneccessary variables
-	drop L* pce_inflator
-	
-	*Labeling new variables
-	*label variable stateRate "Percent of Federal EITC that the state will match"  
-	label variable federalEITC "Estimated dollar amount of federal EITC"
-	label variable federalEITC2010 "Estimated dollar amount of federal EITC-2010 dollars"	
-	label variable totalEITC "Total EITC (state and federal) dollar amount"
-	label variable totalEITC2010 "Total EITC (state and federal) dollar amount-2010 dollars"
-	label variable head_edu "Female household head's education. If there is no female head, then male head education"
-	label variable maxFedEITC "Maximum federal EITC dollar amount possible given marital status and number of children" 
-	label variable maxFedEITC2010 "Maximum federal EITC dollar amount possible given marital status and number of children. 2010 dollars" 
-	label variable maxTotEITC "Maximum fed and state EITC dollar amount possible given marital status and number of children"
-	label variable maxTotEITC2010 "Maximum fed and state EITC dollar amount given marital status and number of children. 2010 dollars"
-
-	*Saving the dataset for now. Later we might wait to save if we have more to do
-	save "$dataRAWCarla/NielsenScannerData/eitcElg/panelists_RS`randomSample'_PS`percentSample'_T`trip'_P`purchases'_years`firstYear'to`yearPresent'_EITCYes.dta", replace
- 	
-	
-
 end
 
+/*---------------------------------------------------------*/
+**** Merge NHGIS to Redfin ****
+/*---------------------------------------------------------*/
+capture program drop mergeCleanData
+program define mergeCleanData
+
+	use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+	merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+	rename totalPop totTractPop
+	bys redfinID: egen totRFPop = sum(totTractPop)
+	gen popWeight = totTractPop/totRFPop
+	order totTractPop totRFPop popWeight prcntHisp prcntHigh bachelor
+	
+	*Collapsing the NHGIS data
+	collapse (mean) prcnt* medianInc [w=totTractPop], by(redfinID)
+	tempfile NHGIS
+	save `NHGIS', replace
+	
+	*Merging to the redfin data
+	import delimited "$dataCLEAN/redfinPercentChange.csv", clear
+	rename redfinid redfinID
+	merge 1:1 redfinID using `NHGIS'
+	
+	foreach var of varlist prcnt*{
+		replace `var' = `var'*100
+		}
+	*TODO: Save this dataset in outputs
+	*TODO: Move this code to the analysis directory
+	gen randomNumber = runiform()
+	sort randomNumber
+	gen index = _n
+	
+	reg gen_factor prcnt* medianInc if index >=20
+	predict xb
+	gen absErr = abs(xb-gen_factor)
+	esttab using "$tables/firstRegressions.tex", ///
+			replace stats(N r2 rmse) se	
+	
+end
 /*---------------------------------------------------------*/
  /* Comparing our sample to CPS                            */
  /*--------------------------------------------------------*/

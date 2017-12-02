@@ -1,0 +1,54 @@
+------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/b
+> uild18_Nov_2017_20_55_10.log
+  log type:  text
+ opened on:  18 Nov 2017, 20:55:10
+    ------------------------------------------------------------------------------------ end paths ---
+  - cleanCrosswalk
+    ------------------------------------------------------------------------- begin cleanCrosswalk ---
+    - import delimited "$dataRAW/crosswalks/redfin_censustracts.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/data
+> RAW//crosswalks/redfin_censustracts.csv", clear
+(11 vars, 68 obs)
+    - rename id redfinID
+    - drop if redfinID == 123
+(1 observation deleted)
+    - rename censustract ct1
+    - rename (v4-v11) (ct12 ct13 ct14 ct15 ct16 ct17 ct18 ct19)
+    - reshape long ct, i(redfinID redfin) j(index)
+(note: j = 1 12 13 14 15 16 17 18 19)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                       67   ->     603
+Number of variables                  11   ->       4
+j variable (9 values)                     ->   index
+xij variables:
+                      ct1 ct12 ... ct19   ->   ct
+-----------------------------------------------------------------------------
+    - drop index
+    - drop if missing(ct)
+(409 observations deleted)
+    - rename ct tractID
+    - export delimited "$dataCLEAN/redfin_censustractsCLEAN.csv", replace
+    = export delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/data
+> CLEAN//redfin_censustractsCLEAN.csv", replace
+file C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censu
+> stractsCLEAN.csv saved
+    - save "$dataCLEAN/redfin_censustractsCLEAN.dta", replace
+    = save "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfi
+> n_censustractsCLEAN.dta", replace
+file C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censu
+> stractsCLEAN.dta saved
+    --------------------------------------------------------------------------- end cleanCrosswalk ---
+  --------------------------------------------------------------------------------------- end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/b
+> uild18_Nov_2017_20_55_10.log
+  log type:  text
+ closed on:  18 Nov 2017, 20:55:10
+------------------------------------------------------------------------------------------------------

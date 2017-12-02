@@ -1,0 +1,1511 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_08_13.log
+  log type:  text
+ opened on:  18 Nov 2017, 21:08:13
+    ------------------------------------------------------------------------------------------------------------------- end paths ---
+  - mergeCleanData
+    -------------------------------------------------------------------------------------------------------- begin mergeCleanData ---
+    - use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+    = use "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censustractsCLEAN.dta", clear
+    - merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+    = merge m:1 tractID using "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//nhgisVariables.dt
+> a", nogen keep(3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               194  
+    -----------------------------------------
+    - rename totalPop totTractPop
+    - bys redfinID: egen totRFPop = sum(totTractPop)
+    - gen popWeight = totTractPop/totRFPop
+    - order totTractPop totRFPop popWeight
+    - stop
+command stop is unrecognized
+    ---------------------------------------------------------------------------------------------------------- end mergeCleanData ---
+  ---------------------------------------------------------------------------------------------------------------------- end main ---
+r(199);
+
+end of do-file
+
+r(199);
+
+. do "C:\Users\DANIEL~2\AppData\Local\Temp\STD07000000.tmp"
+
+.         order totTractPop totRFPop popWeight prcntHisp
+
+. 
+end of do-file
+
+. do "C:\Users\DANIEL~2\AppData\Local\Temp\STD07000000.tmp"
+
+.         order totTractPop totRFPop popWeight prcntHisp prcntHigh
+
+. 
+end of do-file
+
+. do "C:\Users\DANIEL~2\AppData\Local\Temp\STD07000000.tmp"
+
+.         collapse (mean) prcnt* [w=totTractPop], by(redfinID)
+(analytic weights assumed)
+
+. 
+end of do-file
+
+. do "C:\Users\Daniel and Carla\Dropbox\projects\predictingGentrification\build\code\build.do"
+
+. set trace on
+
+. set tracedepth 2
+
+. set more off
+
+. timer clear
+
+. clear
+  ------------------------------------------------------------------------------------------------------------------- begin clear ---
+  - if _caller() < 10 {
+    _clear_9 `0'
+    exit
+    }
+  - version 10
+  - syntax [anything]
+  - tokenize `anything'
+  = tokenize 
+  - if `"`2'"' != "" {
+  = if `""' != "" {
+    display as err "`2' not allowed"
+    exit 198
+    }
+  - if "`1'"=="" {
+  = if ""=="" {
+  - drop _all
+  - label drop _all
+    ----------------------------------------------------------------------------------------------------------------- begin label ---
+    - version 10.0
+    - gettoken val : 0
+    - if (strpos("`val'", "val") > 0 ) {
+    = if (strpos("drop", "val") > 0 ) {
+      gettoken val 0 : 0
+      syntax anything [, nofix]
+      if "`fix'" != "" {
+      local fix ", nofix"
+      }
+      gettoken var rest : anything
+      while `"`rest'"' != "" {
+      gettoken lab rest : rest
+      local label "`lab'"
+      }
+      local vlist : list anything - lab
+      if "`lab'" == "." {
+      local lab ""
+      }
+      foreach var of varlist `vlist' {
+      _label `val' `var' `lab' `fix'
+      }
+      }
+    - else {
+    - _label `macval(0)'
+    = _label drop _all
+    - }
+    ------------------------------------------------------------------------------------------------------------------- end label ---
+  - }
+  - else if "`1'"=="mata" {
+  = else if ""=="mata" {
+    mata: mata clear
+    }
+  - else if inlist("`1'", "results", "matrix") {
+  = else if inlist("", "results", "matrix") {
+    return clear
+    clearreturn
+    ereturn clear
+    sreturn clear
+    _return drop _all
+    if ("`1'" == "matrix") {
+    matrix drop _all
+    _est drop _all
+    }
+    }
+  - else if "`1'"=="programs" {
+  = else if ""=="programs" {
+    program drop _all
+    }
+  - else if "`1'"=="ado" {
+  = else if ""=="ado" {
+    program drop _allado
+    }
+  - else if "`1'"=="*" | "`1'"=="all" {
+  = else if ""=="*" | ""=="all" {
+    capture mata: st_local("semmods", strofreal(sg__global.hasmodels()))
+    capture
+    if (0`semmods') {
+    display as err "-clear all- not allowed while an SEM Builder is open"
+    exit 1
+    }
+    drop _all
+    label drop _all
+    matrix drop _all
+    scalar drop _all
+    constraint drop _all
+    eq drop _all
+    file close _all
+    postutil clear
+    _return drop _all
+    discard
+    program drop _all
+    timer clear
+    mata: mata clear
+    }
+  - else {
+    display as err "`1' not allowed"
+    exit 198
+    }
+  --------------------------------------------------------------------------------------------------------------------- end clear ---
+
+. graph drop _all
+  ------------------------------------------------------------------------------------------------------------------- begin graph ---
+  - if d(`=c(born_date)') < d(23Jul2004) {
+  = if d(29 Oct 2015) < d(23Jul2004) {
+    di as err "your Stata executable is out of date"
+    di as err "    type -update executable- at the Stata prompt"
+    exit 498
+    }
+  - local ver = string(_caller())
+  - if (_caller() < 8.2) version 8
+  - else if (_caller() < 10 ) version 8.2
+  - else version 10
+  - gdi record = yes
+  - gdi maybedraw = yes
+  - if "`._Gr_Global.isa'" == "" {
+  = if "class" == "" {
+    ._Gr_Global = .global_g.new
+    }
+  - ._Gr_Global.callerver = "`ver'"
+  = ._Gr_Global.callerver = "14.1"
+  - capture noisily Graph `0'
+  = capture noisily Graph drop _all
+    ----------------------------------------------------------------------------------------------------------- begin graph.Graph ---
+    - if `"`0'"' == `""' {
+    = if `"drop _all"' == `""' {
+      if `"`.__GRAPHCMD'"' != `""' {
+      local 0 `.__GRAPHCMD'
+      }
+      else {
+      di as error "no existing graph command to replay"
+      exit 198
+      }
+      }
+    - local orig_cmd `0'
+    = local orig_cmd drop _all
+    - gettoken do 0 : 0, parse(" ,")
+    - local orig2 `"`0'"'
+    = local orig2 `" _all"'
+    - local ldo = length("`do'")
+    = local ldo = length("drop")
+    - if "`do'" == bsubstr("draw",1,max(4,`ldo')) {
+    = if "drop" == bsubstr("draw",1,max(4,4)) {
+      gr_draw_replay `0'
+      exit
+      }
+    - if "`do'" == bsubstr("display",1,max(2,`ldo')) {
+    = if "drop" == bsubstr("display",1,max(2,4)) {
+      gr_draw_replay `0'
+      exit
+      }
+    - if "`do'" == bsubstr("save",1,max(4,`ldo')) {
+    = if "drop" == bsubstr("save",1,max(4,4)) {
+      gr_save `0'
+      exit
+      }
+    - if "`do'" == bsubstr("use",1,max(3,`ldo')) {
+    = if "drop" == bsubstr("use",1,max(3,4)) {
+      gr_use `0'
+      exit
+      }
+    - if "`do'" == bsubstr("print",1,max(5,`ldo')) {
+    = if "drop" == bsubstr("print",1,max(5,4)) {
+      gr_print `0'
+      exit
+      }
+    - if "`do'" == bsubstr("dir",1,max(3,`ldo')) {
+    = if "drop" == bsubstr("dir",1,max(3,4)) {
+      gr_dir `0'
+      exit
+      }
+    - if "`do'" == bsubstr("describe",1,max(1,`ldo')) {
+    = if "drop" == bsubstr("describe",1,max(1,4)) {
+      gr_describe `0'
+      exit
+      }
+    - if "`do'" == bsubstr("drop",1,max(4,`ldo')) {
+    = if "drop" == bsubstr("drop",1,max(4,4)) {
+    - gr_drop `0'
+    = gr_drop  _all
+    - exit
+    ------------------------------------------------------------------------------------------------------------- end graph.Graph ---
+  - local rc = _rc
+  - gdi record = yes
+  - gdi maybedraw = yes
+  - gdi end
+  - exit `rc'
+  = exit 0
+  --------------------------------------------------------------------------------------------------------------------- end graph ---
+
+. set matsize 800
+
+. set seed 123
+
+. sysuse auto
+  ------------------------------------------------------------------------------------------------------------------ begin sysuse ---
+  - version 8
+  - gettoken first : 0, parse(" ,") quotes
+  - if `"`first'"'=="dir" {
+  = if `"auto"'=="dir" {
+    gettoken first 0 : 0, parse(" ,")
+    sysusedir `0'
+    exit
+    }
+  - local 0 `"using `0'"'
+  = local 0 `"using auto"'
+  - syntax using/ [, CLEAR REPLACE]
+  - local clear = cond("`replace'"!="", "clear", "`clear'")
+  = local clear = cond(""!="", "clear", "")
+  - if bsubstr(`"`using'"',-4,.)!=".dta" {
+  = if bsubstr(`"auto"',-4,.)!=".dta" {
+  - local using `"`using'.dta"'
+  = local using `"auto.dta"'
+  - }
+  - quietly findfile `"`using'"'
+  = quietly findfile `"auto.dta"'
+    -------------------------------------------------------------------------------------------------------------- begin findfile ---
+    - version 8
+    - gettoken fn 0 : 0, parse(" ,")
+    - syntax [, ALL noDEScend PATH(string)]
+    - if `"`path'"'=="" {
+    = if `""'=="" {
+    - local path `"`c(adopath)'"'
+    = local path `"BASE;SITE;.;PERSONAL;PLUS;OLDPLACE"'
+    - }
+    - local n 0
+    - local subdir : adosubdir `"`fn'"'
+    = local subdir : adosubdir `"auto.dta"'
+    - if `"`subdir'"' != "" {
+    = if `"a"' != "" {
+    - gettoken d path : path, parse(";")
+    - while `"`d'"'!="" {
+    = while `"BASE"'!="" {
+    - if `"`d'"' != ";" {
+    = if `"BASE"' != ";" {
+    - local d : sysdir `"`d'"'
+    = local d : sysdir `"BASE"'
+    - local ffn `"`d'`fn'"'
+    = local ffn `"C:\Program Files (x86)\Stata14\ado\base/auto.dta"'
+    - capture confirm file `"`ffn'"'
+    = capture confirm file `"C:\Program Files (x86)\Stata14\ado\base/auto.dta"'
+    - if _rc==0 {
+      di as txt `"`ffn'"'
+      if "`all'"=="" {
+      ret local fn `"`ffn'"'
+      exit
+      }
+      if `n' {
+      ret local fn `"`return(fn)' "`ffn'""'
+      }
+      else ret local fn `""`ffn'""'
+      local n 1
+      }
+    - if "`descend'"=="" {
+    = if ""=="" {
+    - local ffn `"`d'`subdir'`c(dirsep)'`fn'"'
+    = local ffn `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"'
+    - capture confirm file `"`ffn'"'
+    = capture confirm file `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"'
+    - if _rc==0 {
+    - di as txt `"`ffn'"'
+    = di as txt `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"'
+    - if "`all'"=="" {
+    = if ""=="" {
+    - ret local fn `"`ffn'"'
+    = ret local fn `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"'
+    - exit
+    ---------------------------------------------------------------------------------------------------------------- end findfile ---
+  - capture noisily use `"`r(fn)'"', `clear'
+  = capture noisily use `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"', 
+(1978 Automobile Data)
+  - if _rc==0 {
+  - capture window menu add_recentfiles `"`r(fn)'"', rlevel(1)
+  = capture window menu add_recentfiles `"C:\Program Files (x86)\Stata14\ado\base/a/auto.dta"', rlevel(1)
+  - }
+  - else {
+    exit _rc
+    }
+  -------------------------------------------------------------------------------------------------------------------- end sysuse ---
+
+. 
+. 
+. 
+. 
+. /*===========================================================================================*/
+. /*                                     Main Program                                          */
+. /*===========================================================================================*/
+. capture program drop main
+
+. program define main
+  1.     paths
+  2. 
+.     // =============== 0 Comment in/out subprograms you wish to run ================
+.         
+. 
+.         cleanNHGIS, county("San Francisco County")
+  3.         *cleanCrosswalk
+.         mergeCleanData
+  4. 
+. 
+.         
+.         
+. end
+
+. 
+. //TODO
+. 
+. 
+. 
+. /*===========================================================================================*/
+. /*                                    Sub Programs                                           */
+. /*===========================================================================================*/
+.  
+. /*---------------------------------------------------------*/
+. /* Define Path Macros                                                      */
+. /*---------------------------------------------------------*/
+. capture program drop paths
+
+. program define paths
+  1. 
+.         *Paths for EML server
+.         global dataRAW  "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW/"    
+  2.         global dataCLEAN "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN/"
+  3.         global code "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code"
+  4.         
+.         *Creating a string with current date and time
+.         local c_date = c(current_date)
+  5.         local c_time = c(current_time)
+  6.         local c_time_date = "`c_date'"+"_"+"`c_time'"
+  7.         local time_string = subinstr("`c_time_date'", ":", "_", .)
+  8.         local time_string = subinstr("`time_string'", " ", "_", .)
+  9.         //starting a log file
+.         *Creating a string with current date and time
+.         local c_date = c(current_date)
+ 10.         local c_time = c(current_time)
+ 11.         local c_time_date = "`c_date'"+"_"+"`c_time'"
+ 12.         local time_string = subinstr("`c_time_date'", ":", "_", .)
+ 13.         local time_string = subinstr("`time_string'", " ", "_", .)
+ 14.         capture log close
+ 15.         log using "$code/logFiles/build`time_string'.log", replace
+ 16.         
+. end;    
+
+. //paths
+. 
+. /*---------------------------------------------------------*/
+. **** First Program ****
+. /*---------------------------------------------------------*/
+. capture program drop cleanNHGIS
+
+. program define cleanNHGIS
+  1. syntax[, county(string)]
+  2.         
+.         tempfile household race housing incomeEducation age
+  3.         
+.         /*=====================
+>         Race variables
+>         =======================*/
+.         *White, black, asian
+.         import delimited "$dataRAW/NHGIS/nhgis0017_csv/nhgis0017_ds172_2010_tract.csv", clear   
+  4.         keep if state == "California"
+  5.         keep if county == "`county'"
+  6. 
+.         rename tracta tractID   
+  7.         rename h7x001 totalPop
+  8.         rename h7x002 white
+  9.         rename h7x003 black
+ 10.         rename h7x005 asian
+ 11.         
+.         gen prcntWhite = white/totalPop
+ 12.         gen prcntBlack = black/totalPop
+ 13.         gen prcntAsian = asian/totalPop
+ 14.         
+.         keep year gisjoin tractID county totalPop white black asian prcntWhite ///
+>                 prcntBlack prcntAsian   
+ 15.         save `race', replace
+ 16. 
+.         *Hispanic
+.         import delimited "$dataRAW/NHGIS/nhgis0017_csv/nhgis0017_ds176_20105_2010_tract.csv", clear     
+ 17.         keep if state == "California"
+ 18.         keep if county == "`county'"
+ 19.         
+.         rename tracta tractID
+ 20.         rename jmke001 totalPop
+ 21.         rename jmke003 hisp
+ 22.         
+.         gen prcntHisp = hisp/totalPop
+ 23.         
+.         keep tractID prcntHisp
+ 24.         merge 1:1 tractID using `race', nogen
+ 25.         save `race', replace
+ 26. 
+.         
+. 
+.         /*=====================
+>         Household variables
+>         =======================*/
+.         import delimited "$dataRAW/NHGIS/nhgis0016_csv/nhgis0016_ds181_2010_tract.csv", clear
+ 27.         
+.         keep if state == "California"
+ 28.         keep if county == "`county'"
+ 29. 
+.         rename tracta tractID   
+ 30.         rename lhc001 totalHouseholds
+ 31.         rename lhc002 husWifeFam
+ 32.         rename lhc003 husWifeChild
+ 33.         rename lhc016 snglMom
+ 34.         
+.         gen prcntSnglMom = snglMom/totalHouseholds
+ 35.         gen prcntHusWifeFam = husWifeFam/totalHouseholds
+ 36.         gen prcntHusWifeChild = husWifeChild/totalHouseholds
+ 37.         
+.         keep tractID totalHouseholds husWifeFam husWifeChild snglMom prcnt*
+ 38.         save `household', replace
+ 39.         
+.         /*=====================
+>         Housing variables
+>         =======================*/
+.         import delimited "$dataRAW/NHGIS/nhgis0015_csv/nhgis0015_ds172_2010_tract.csv", clear
+ 40.         
+.         keep if state == "California"
+ 41.         keep if county == "`county'"
+ 42.         
+.         rename tracta tractID
+ 43.         rename ife001 totHousingUnits
+ 44.         rename ife002 totOccUnits
+ 45.         rename ife003 totVacUnits
+ 46.         rename iff004 totRentUnits
+ 47.         
+.         gen occRate = totOccUnits/totHousingUnits
+ 48.         gen prcntRentOcc = totRentUnits/totHousingUnits
+ 49.         
+.         keep tractID totHousingUnits totOccUnits totVacUnits totRentUnits occRate prcntRentOcc
+ 50.         save `housing', replace
+ 51.         
+.         /*=====================
+>         Education and Income levels
+>         =======================*/               
+.         import delimited "$dataRAW/NHGIS/nhgis0018_csv/nhgis0018_ds176_20105_2010_tract.csv", clear
+ 52.         
+.         keep if state == "California"
+ 53.         keep if county == "`county'"
+ 54.         
+.         rename tracta tractID
+ 55.         rename joim001 medianInc
+ 56.         
+.         keep tractID medianInc
+ 57.         save `incomeEducation'
+ 58.         
+.         import delimited "$dataRAW/NHGIS/nhgis0014_csv/nhgis0014_ds176_20105_2010_tract.csv", clear
+ 59.         
+.         keep if state == "California"
+ 60.         keep if county == "`county'"
+ 61.         
+.         rename tracta tractID
+ 62.         rename jn9e002 totalPop
+ 63.         rename jn9e015 maleBachelorDeg
+ 64.         rename jn9e016 maleMastersDeg
+ 65.         rename jn9e017 maleProfDeg
+ 66.         rename jn9e018 malePhD
+ 67. 
+.         rename jn9e032 femaleBachelorDeg
+ 68.         rename jn9e033 femaleMastersDeg
+ 69.         rename jn9e034 femaleProfDeg
+ 70.         rename jn9e035 femalePhD
+ 71.         
+.         gen bachelorDeg = maleBachelorDeg + femaleBachelorDeg
+ 72.         gen prcntHighEdu = bachelorDeg/totalPop
+ 73.         /*gen mastersDeg = maleMastersDeg + femaleMastersDeg
+>         gen profDeg = maleProfDeg + femaleProfDeg
+>         gen phD = malePhD + femalePhD
+>         gen prcntHighEdu = (bachelorDeg + mastersDeg + profDeg + phD)/totalPop*/
+.         
+.         keep tractID bachelorDeg prcntHighEdu
+ 74.         
+.         merge 1:1 tractID using `incomeEducation', nogen
+ 75.         save `incomeEducation', replace
+ 76.         
+.         /*=====================
+>         Age variables
+>         =======================*/
+.         import delimited "$dataRAW/NHGIS/nhgis0013_csv/nhgis0013_ds172_2010_tract.csv", clear
+ 77.         
+.         keep if state == "California"
+ 78.         keep if county == "`county'"
+ 79.         
+.         rename tracta tractID   
+ 80.         rename h76001 totalPop
+ 81.         
+.         egen under18 = rowtotal(h76003-h76006 h76027-h76030)
+ 82.         egen age18_29 = rowtotal(h76007-h76011 h76031-h76035)
+ 83.         egen age30_44 = rowtotal(h76012-h76014 h76036-h76038)
+ 84.         egen age44_64 = rowtotal(h76015-h76019 h76039-h76043)
+ 85.         egen age65plus = rowtotal(h76020-h76025 h76044-h76049)
+ 86.         
+.         keep tractID under18 age18_29 age30_44 age44_64 age65plus
+ 87. 
+.         foreach dataSet in `race' `household' `housing' `incomeEducation'{
+ 88.                 merge 1:1 tractID using `dataSet', nogen        
+ 89.         }       
+ 90.         compress
+ 91.         save "$dataCLEAN/nhgisVariables.dta", replace
+ 92. end
+
+. 
+. 
+. /*---------------------------------------------------------*/
+. **** Cleaning Crosswalk ****
+. /*---------------------------------------------------------*/
+. capture program drop cleanCrosswalk
+
+. program define cleanCrosswalk
+  1. 
+.         import delimited "$dataRAW/crosswalks/redfin_censustracts.csv", clear
+  2.         rename id redfinID
+  3.         drop if redfinID == 123
+  4.         rename censustract ct1
+  5.         rename (v4-v11) (ct12 ct13 ct14 ct15 ct16 ct17 ct18 ct19)
+  6.         reshape long ct, i(redfinID redfin) j(index)
+  7.         drop index
+  8.         drop if missing(ct)
+  9.         rename ct tractID
+ 10.         *reshape wide redfinID
+.         export delimited "$dataCLEAN/redfin_censustractsCLEAN.csv", replace
+ 11.         save "$dataCLEAN/redfin_censustractsCLEAN.dta", replace
+ 12.         
+. end
+
+. 
+. /*---------------------------------------------------------*/
+. **** Merge NHGIS to Redfin ****
+. /*---------------------------------------------------------*/
+. capture program drop mergeCleanData
+
+. program define mergeCleanData
+  1. 
+.         use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+  2.         merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+  3.         rename totalPop totTractPop
+  4.         bys redfinID: egen totRFPop = sum(totTractPop)
+  5.         gen popWeight = totTractPop/totRFPop
+  6.         order totTractPop totRFPop popWeight prcntHisp prcntHigh
+  7. stop
+  8.         *Collapsing the data
+.         collapse (mean) prcnt* [w=totTractPop], by(redfinID)
+  9.         
+. end
+
+. /*---------------------------------------------------------*/
+.  /* Comparing our sample to CPS                            */
+.  /*--------------------------------------------------------*/
+. capture program drop compareCPS
+
+. program define compareCPS
+  1. syntax [, randomSample(string) percentSample(integer 5) trips(string) ///
+>         purchases(string) years(string)]
+  2. 
+.         local counter = 0
+  3.         foreach year in `years'{
+  4.                 *Saving the first and last year we want to merge data over
+.                 local counter `=`counter'+1'
+  5.                 if `counter' == 1{
+  6.                         local firstYear = "`year'"
+  7.                 }
+  8.                 local yearPresent = "`year'"
+  9.         }
+ 10.         import excel "$dataRAWCarla/CPS/incomeTables/hinc2014_cleaned.xls", sheet("sheet1") firstrow clear
+ 11.         *Dropping the observation "Total"
+.         gen bin = _n
+ 12.         rename number_households num_house_cps
+ 13.         sum num_house_cps if bin == 1
+ 14.         local total=r(max)
+ 15.         drop if bin == 1
+ 16.         rename IncomeofHousehold hinc2014
+ 17.         *Now bin is an id for income categories
+.         replace bin = bin-1
+ 18.         sum bin
+ 19.         local maxBin = r(max)
+ 20.         
+.         *We need to combine some bins so that CPS bins match with Nielsen bins
+.         *Reshape the data in wide format to make adding bins together easier
+.         replace bin = 11 if bin == 12
+ 21.         replace bin = 13 if bin == 14
+ 22.         forval b = 16/20{
+ 23.                 replace bin = 15 if bin == `b'
+ 24.         }
+ 25.         forval b = 22/`maxBin'{
+ 26.                 replace bin = 21 if bin == `b'
+ 27.         }
+ 28.         
+.         collapse (sum) num_house_cps, by(bin)
+ 29.         replace bin = _n 
+ 30.         rename bin hinc14
+ 31.         tempfile cps
+ 32.         save `cps'
+ 33.         
+.         *Import Nielsen data
+.         import delimited "$dataNielsen/HMS/2014/Annual_Files/panelists_2014.tsv", clear
+ 34.         replace household_income = 4 if household_income == 6
+ 35.         replace household_income = 8 if household_income == 10
+ 36.         sort household_income
+ 37.         collapse (sum) num_house_nielsen = projection_factor, by(household_income)
+ 38.         rename household_income hinc14
+ 39.         replace hinc14 = _n
+ 40.         
+.         #delimit ;
+delimiter now ;
+.         label define hinc14 
+>             1 "Under $5,000"
+>             2 "$5,000 - $9,999"
+>             3 "$10,000 - $14,999"
+>             4 "$15,000 - $19,000"
+>             5 "$20,000 - $24,999"
+>             6 "$25,000 - $29,999"
+>             7 "$30,000 - $34,999"
+>             8 "$35,000 - $39,999"
+>             9 "$40,000 - $44,999"
+>             10 "$45,000 - $49,999"
+>             11 "$50,000 - $59,999"
+>             12 "$60,000 - $69,999"
+>             13 "$70,000 - $99,999"
+>             14 "$100,000 and above" ;
+ 41.         #delimit cr;
+delimiter now cr
+.  
+.         
+.         merge 1:1 hinc14 using `cps'
+ 42.         twoway (histogram hinc14 [fweight = num_house_nielsen], discrete color(green)) ///
+>                 (histogram hinc14 [fweight = num_house_cps], discrete ///
+>                 fcolor(none) lcolor(black)), legend(order(1 "Nielsen" 2 "CPS" )) ///
+>                 title("Histogram of 2014 Household Income")
+ 43.         graph export "$figures/incomeHist2014.pdf", replace
+ 44.         
+.         di"***********************************Import CPS ACES data"
+ 45.         **Importing price inflator
+.         use "$dataRAWCarla/eitcTaxTables/statebyhh_eitcparameters.dta", clear
+ 46.         contract taxyear pce_inflator
+ 47.         rename taxyear year
+ 48.         tempfile inflator
+ 49.         save `inflator'
+ 50.         ***Looking at the whole population CPS
+.         use "$dataRAWCarla/CPS/aces/cps_00002.dta", clear
+ 51.         replace eitcred = . if eitcred == 9999
+ 52.         merge m:1 year using `inflator', nogen keep(3)
+ 53.         gen eitcred2010 = eitcred*pce_inflator
+ 54.         sum eitcred2010 if eitcred2010 > 0 & year <=2013, detail
+ 55.         *Percent households that receive the EITC
+.         gen yesEITC = 0
+ 56.         replace yesEITC = 1 if eitcred2010 > 0 
+ 57.         sum yesEITC 
+ 58.         tempfile cpsaces
+ 59.         save `cpsaces'
+ 60. 
+.         
+.         *Use CPS MORG files for demographics 
+.         *Age, number of single mothers, education, income
+.         use "$dataRAWCarla/CPS/morg/morgAllYears.dta", clear
+ 61.         label define reflabel 1" Ref pers w/relations" 2 "Ref pers w/o relations" ///
+>                 3 "Spouse" 4 "child"  
+ 62.         label values relref95 reflabel
+ 63.         drop if year < 2012
+ 64.         *Female head age
+.         sum age if (relref95 == 1 | relref95 == 3 | relref95 == 2) & sex == 2, detail
+ 65.         *Male head age
+.         sum age if (relref95 == 1 | relref95 == 3 | relref95 == 2) & sex == 1, detail
+ 66.         *Race
+.         label define raceLabel 1 "White" 2 "Black" 
+ 67.         label values race raceLabel
+ 68.         tab race
+ 69.         *Female household head education
+.         gen education = 0
+ 70.         replace education = 1 if ged == 1
+ 71.         replace education = 2 if grprof == 1
+ 72.         replace education = 3 if ms123 == 1 |  ms123 == 2 | ms123 == 3
+ 73.         label define educLabel 1 "Highschool" 2 "College" 3 "Higher degree"
+ 74.         label values education educLabel
+ 75.         tab education if sex == 2 & relref95 == 1 | relref95 == 2| relref95 == 3
+ 76.         *hist education if sex == 2 & relref95 == 1 | relref95 == 2, ///
+>                 discrete addlabels percent
+.         
+.         *Percent households with children
+.         gen children = 0
+ 77.         replace children = 1 if chldpres! = 0
+ 78.         tab children if relref95 == 1 | relref95 == 2
+ 79.         *Percent households with single mothers
+.         //First we need to find the total number of households in our sample
+.         count if relref95 == 1 | relref95 == 2
+ 80.         local numberHouseholds = r(N)
+ 81.         //Creating a single parent dummy
+.         gen singleParent = 0 
+ 82.         //I'm including widowed and divorced in my sample of single head
+.         replace singleParent = 1 if chldpres != 0 & marital != 1        
+ 83.         count if sex == 2 & singleParent == 1 & relref95 == 1 
+ 84.         local numberSingle = r(N)
+ 85.         di "Percent single mothers"  = `numberSingle'/`numberHouseholds'                
+ 86.         
+.         *Percent of married households with children
+.         //I count a household as married if the reference person is married
+.         count if marital == 1 & relref95 == 1 & chldpres != 0
+ 87.         local numberMarried = r(N)
+ 88.         di "Percent married parents" = `numberMarried'/`numberHouseholds'
+ 89.         
+.         *****
+.         di "*****************************************************************************"
+ 90.         di "**EITC recipients only - CPS data"
+ 91.         use "$dataRAWCarla/CPS/aces/cps_00002.dta", clear
+ 92.         keep if eitcred > 0 & year >=2004
+ 93.         rename relate relref95
+ 94.         rename marst marital
+ 95.         rename serial hhid
+ 96.         *Female head age - whole sample
+.         sum age if (relref95 == 101 | relref95 == 201) & sex == 2
+ 97.         *Male head age - whole sample
+.         sum age if (relref95 == 101 | relref95 == 201) & sex == 1
+ 98.         *Race
+.         tab race
+ 99.         *Female head of household education
+.         gen education = 0
+100.         replace education = 1 if educ99 == 1 | educ99 == 4 | educ99 == 5
+101.         replace education = 2 if educ99 == 6 | educ99 == 7 | educ99 == 8 | educ99 == 9
+102.         replace education = 3 if educ99 == 10
+103.         replace education = 4 if educ99 == 11 | educ99 == 13 | educ99 == 14
+104.         replace education = 5 if educ99 == 15 
+105.         replace education = 6 if educ99 == 16 | educ99 == 17 | educ99 == 18
+106.         label define educ2label 1 "Gradeschool" 2 "Some high school" ///
+>                 3 "Graduated high school" 4 "Some college" 5 "Graduated college" ///
+>                 6 "Post college"
+107.         label values education educ2label 
+108.         //Only want female head of household education. Assuming heads of households are ref persons or spouses
+.         tab education if sex == 2 & relref95 == 101 | relref95 == 201 
+109.         
+. 
+.         *Percent households with children
+.         gen children = 0
+110.         replace children = 1 if nchild! = 0
+111.         tab children if relref == 101
+112.         
+.         *Percent households with single mothers
+.         //First we need to find the total number of households in our sample
+.         count if relref95 == 101 
+113.         local numberHouseholds = r(N)   
+114.         //Creating a single parent dummy
+.         gen singleParent = 0 
+115.         //I'm including widowed and divorced in my sample of single head
+.         replace singleParent = 1 if marital != 1        
+116.         count if sex == 2 & singleParent == 1 & relref95 == 101 & nchild != 0
+117.         local numberSingle = r(N)
+118.         di "Percent single mothers"  = `numberSingle'/`numberHouseholds'                
+119.         
+.         *Percent of married households with children
+.         //I count a household as married if the reference person is married
+.         count if marital == 1 & relref95 == 101 & nchild != 0
+120.         local numberMarried = r(N)
+121.         di "Percent married parents" = `numberMarried'/`numberHouseholds'
+122.         
+.         
+.         ***************************************************************************
+.         di "***************************************************************************"
+123.         di "****Import and summarize Nielsen data"
+124.         di "**All households"
+125.         use "$dataRAWCarla/NielsenScannerData/eitcElg/panelists_RS`randomSample'_PS`percentSample'_T`trip'_P`purchases'_years`fi
+> rstYear'to`yearPresent'_EITCYes.dta", clear
+126.         sum federalEITC2010 if federalEITC2010 > 0 & !missing(federalEITC2010) [fweight = projection_factor], detail 
+127. 
+.         *Percent households that have EITC - Nielsen
+.         //Income imputed measure
+.         gen yesEITC_ii = 0
+128.         replace yesEITC_ii = 1 if federalEITC2010 > 0 & !missing(federalEITC2010) 
+129.         //Demographics imputed
+.         gen yesEITC_di = 0
+130.         replace yesEITC_di = 1 if maxFedEITC2010 > 0 & !missing(maxFedEITC2010)
+131.         sum yesEITC_ii yesEITC_di [fweight = projection_factor]
+132. 
+.         *Average age of heads of household - Nieslen
+.         gen female_age_est = female_head_age
+133.         replace female_age_est = 25 if female_head_age == 1
+134.         replace female_age_est = 27.5 if female_head_age == 2
+135.         replace female_age_est = 32.5 if female_head_age == 3
+136.         replace female_age_est = 37.5 if female_head_age == 4
+137.         replace female_age_est = 42.5 if female_head_age == 5
+138.         replace female_age_est = 47.5 if female_head_age == 6
+139.         replace female_age_est = 52.5 if female_head_age == 7
+140.         replace female_age_est = 60 if female_head_age == 8
+141.         replace female_age_est = 65 if female_head_age == 9
+142. 
+.         gen male_age_est =  male_head_age
+143.         replace male_age_est = 25 if male_head_age == 1
+144.         replace male_age_est = 27.5 if male_head_age == 2
+145.         replace male_age_est = 32.5 if male_head_age == 3
+146.         replace male_age_est = 37.5 if male_head_age == 4
+147.         replace male_age_est = 42.5 if male_head_age == 5
+148.         replace male_age_est = 47.5 if male_head_age == 6
+149.         replace male_age_est = 52.5 if male_head_age == 7
+150.         replace male_age_est = 60 if male_head_age == 8
+151.         replace male_age_est = 65 if male_head_age == 9
+152.         
+.         sum female_age_est if female_age_est != 0 [fweight = projection_factor], detail
+153.         sum male_age_est if male_age_est !=0 [fweight = projection_factor], detail
+154.         *Race
+.         label define raceLabel 1 "White" 2 "Black"
+155.         label values race raceLabel
+156.         tab race [fweight =  projection_factor]
+157.         *Female head of household education - Nielsen
+.         gen education = 0
+158.         replace education = 1 if female_head_edu == 3 | female_head_edu == 4
+159.         replace education = 2 if female_head_edu == 5
+160.         replace education = 3 if female_head_edu == 6
+161.         label define educLabel 1 "Highschool" 2 "College" 3 "Higher degree"
+162.         label values education educLabel
+163.         tab education [fweight = projection_factor]
+164.         *hist education [fweight = projection_factor], discrete addlabels percent 
+.         
+.         *Percent households with children
+.         gen children = 0
+165.         replace children = 1 if age_and_presence != 9
+166.         tab children [fweight = projection_factor]
+167.         *Percent households with single mothers - Nielsen
+. 
+.         gen single_mother = 0
+168.         replace single_mother = 1 if single_head == 1 & male_head_age == 0 & ///
+>                 age_and_presence_of_children != 9
+169.         sum single_mother [fweight = projection_factor] 
+170.         *Percent households with married parents - Nielsen
+.         gen married_parents = 0
+171.         replace married_parents = 1 if marital_status == 1 & age_and_presence_of_children != 9
+172.         sum married_parents [fweight = projection_factor]
+173.         
+.         
+.         
+.         di "*************************************************************************"
+174.         ****
+.         di "***Looking only at the EITC sample - Nielsen"
+175.         keep if federalEITC > 0 & !missing(federalEITC) 
+176.         
+.         *Average age of male heads of household- EITC only 
+.         sum female_age_est if female_age_est != 0 [fweight = projection_factor], detail
+177.         sum male_age_est if male_age_est !=0 [fweight = projection_factor], detail
+178.         
+.         *Race- EITC only - Nielsen
+.         tab race [fweight =  projection_factor]
+179.         *Female head of household education - EITC only - Nielsen
+.         label define educ2label 1 "Gradeschool" 2 "Some high school" ///
+>                 3 "Graduated high school" 4 "Some college" 5 "Graduated college" ///
+>                 6 "Post college"
+180.         label values female_head_educ educ2label
+181.         tab female_head_edu [fweight = projection_factor]
+182.         *hist female_head_edu [fweight = projection_factor], discrete percent ///
+>                 addlabels title("Female head education")
+.         
+.         *Percent households with children
+.         tab children [fweight = projection_factor]
+183.         *Percent households with single mothers - Nielsen
+.         sum single_mother [fweight = projection_factor]
+184.         *Percent households with married parents - Nielsen
+.         sum married_parents [fweight = projection_factor]       
+185.         
+. end
+
+. 
+. /*---------------------------------------------------------*/
+.  /* incomePercentiles                  */
+.  /*--------------------------------------------------------*/
+.  capture program drop incomePercentiles
+
+.  program define incomePercentiles
+  1.  syntax[, otherDataDir(string)] 
+  2.         /*
+>         This program generates a dataset of 3-digit zipcodes with categorical
+>         variables indicating whether the zipcode falls various percentiles of income.
+>         */
+.         
+.         ******Loading zipcode data and income from the Census
+.         //Population per 5 digit zipcode. 
+.         import delimited "`otherDataDir'/nhgisData/nhgis0010_csv/nhgis0010_ds172_2010_zcta.csv", clear
+  3.         rename name name_e
+  4.         rename h7v001 population
+  5.         keep name_e population
+  6.         tempfile population
+  7.         save `population'
+  8.         
+.         //Income data per 5 digit zipcode
+.         import delimited "`otherDataDir'/nhgisData/nhgis0009_csv/nhgis0009_ds184_20115_2011_zcta.csv", clear
+  9.         merge 1:1 name_e using `population', nogen keep(3)
+ 10.         gen store_zip3 = substr(name_e, 6, 4)
+ 11.         destring store_zip3, replace
+ 12.         rename mp1e001 medianIncome     
+ 13.         
+.         //Creating population weights
+.         sort store_zip3
+ 14.         by store_zip3: egen totalPop = sum(population)
+ 15.         gen popWeight = population/totalPop
+ 16. 
+.         //Collapsing median income to 3 digit zipcodes
+.         collapse (mean) medianIncome [pw= popWeight], by(store_zip3)
+ 17.         
+.         //getting percentiles
+.         _pctile medianIncome, percentiles(10(10)90)
+ 18. 
+.         
+.         gen bottom10 = 1 if medianIncome <=`r(r1)'
+ 19.         replace bottom10 = 0 if medianIncome > `r(r1)'
+ 20.         
+.         gen bottom20 = 1 if medianIncome <=`r(r2)'
+ 21.         replace bottom20 = 0 if medianIncome > `r(r2)'
+ 22.         
+.         gen bottom30 = 1 if medianIncome <=`r(r3)'
+ 23.         replace bottom30 = 0 if medianIncome > `r(r3)'
+ 24.         
+.         gen top30 = 1 if medianIncome >=`r(r7)'
+ 25.         replace top30 = 0 if medianIncome < `r(r7)'
+ 26.         
+.         gen top20 = 1 if medianIncome >=`r(r8)'
+ 27.         replace top20 = 0 if medianIncome < `r(r8)'
+ 28. 
+.         gen top10 = 1 if medianIncome >=`r(r9)'
+ 29.         replace top10 = 0 if medianIncome < `r(r9)'
+ 30.         save "$dataSTATA/incomePercentiles", replace
+ 31.         
+.  end
+
+.  
+.  
+. /*---------------------------------------------------------*/
+.  /* Takeup rates percentiles                     */
+.  /*--------------------------------------------------------*/
+.  capture program drop takeupPercentiles
+
+.  program define takeupPercentiles
+  1.  syntax[, otherDataDir(string)] 
+  2. 
+.         ******Loading EITC take-up rate data
+.         **3 digit Zipcta don't match perfectly with 3 digit zipcodes, 97% of them match
+.         **so I'm not worrying about doing a crosswalk right now. 
+.         use "`otherDataDir'/EITC_takeup_brookings/zipcta_eitctakeup.dta", clear
+  3.         keep if year == 2010
+  4.         tostring zipcta, gen (zipctaString)
+  5.         replace zipctaString = "0" + zipctaString if strlen(zipctaString) == 4
+  6.         replace zipctaString = "00" + zipctaString if strlen(zipctaString) == 3
+  7.         gen zipcta3 = substr(zipctaString, 1, 3)
+  8.         sort zipcta3    
+  9.         by zipcta3: egen totalPop = sum(zip_pop2010)
+ 10.         gen popWeight = zip_pop2010/totalPop
+ 11. 
+.         //Collapsing takeup rate to 3 digit zipcodes
+.         collapse (mean) eitctakeup_rate [pw= popWeight], by(zipcta3)
+ 12.         
+.         //getting percentiles
+.         _pctile eitctakeup_rate, percentiles(10(10)90)
+ 13.         
+.         gen bottom10eitc = 1 if eitctakeup_rate <=`r(r1)'
+ 14.         replace bottom10eitc = 0 if eitctakeup_rate > `r(r1)'
+ 15.         
+.         gen bottom20eitc = 1 if eitctakeup_rate <=`r(r2)'
+ 16.         replace bottom20eitc = 0 if eitctakeup_rate > `r(r2)'
+ 17.         
+.         gen bottom30eitc = 1 if eitctakeup_rate <=`r(r3)'
+ 18.         replace bottom30eitc = 0 if eitctakeup_rate > `r(r3)'
+ 19.         
+.         gen top30eitc = 1 if eitctakeup_rate >=`r(r7)'
+ 20.         replace top30eitc = 0 if eitctakeup_rate < `r(r7)'
+ 21.         
+.         gen top20eitc = 1 if eitctakeup_rate >=`r(r8)'
+ 22.         replace top20eitc = 0 if eitctakeup_rate < `r(r8)'
+ 23. 
+.         gen top10eitc = 1 if eitctakeup_rate >=`r(r9)'
+ 24.         replace top10eitc = 0 if eitctakeup_rate < `r(r9)'
+ 25.         destring zipcta3, gen(store_zip3)
+ 26.         tempfile takeup
+ 27.         save "$dataSTATA/takeupPercentiles", replace
+ 28.         
+. end
+
+. /*---------------------------------------------------------*/
+.  /* plotting consumption and prices                        */
+.  /*--------------------------------------------------------*/
+.  capture program drop plotGoods
+
+.  program define plotGoods
+  1.  syntax[, nielsenDir(string) otherDataDir(string) years(string) ///
+>         productGroup(string) percentSample(integer 5) ///
+>         figuresDir(string) bottomPercentile(integer 10) topPercentile(integer 10)] 
+  2.                 
+.         
+. 
+.         *Iterating through years, product groups, then files within each product group
+.         //getting the first and last years specified. 
+.         local counter = 0
+  3.         foreach year in `years'{
+  4.                 local counter `=`counter'+1'
+  5.                 if `counter' == 1{
+  6.                         local firstYear = "`year'"
+  7.                 }
+  8.                 local yearPresent = "`year'"
+  9.         }
+ 10.         foreach yr in "`years'"{
+ 11.                 *Getting a random sample of stores if we are debugging
+.                 if `percentSample' != 100{
+ 12.                         set seed 2038947
+ 13.                         import delimited "`nielsenDir'/RMS/`yr'/Annual_Files/stores_`yr'.tsv", clear                    
+ 14.                         contract store_code_uc
+ 15.                         gen randomNumber = runiform()
+ 16.                         gen percentSample = `percentSample'/100
+ 17.                         drop if randomNumber > percentSample
+ 18.                         drop randomNumber percentSample
+ 19.                         tempfile randomStores
+ 20.                         save `randomStores'                     
+ 21.                 }
+ 22.                 foreach group in "`productGroup'"{
+ 23.                         cd "`nielsenDir'/RMS/`yr'/Movement_Files/`group'_`yr'"
+ 24.                         local files: dir . files "*.tsv" 
+ 25.                         local i = 1
+ 26.                         foreach file in `files' { 
+ 27.                                 display "`file'"
+ 28.                                 import delimited "`file'", clear
+ 29.                                 *Only keeping the random sample determined above
+.                                 if `percentSample' != 100{
+ 30.                                         merge m:1 store_code_uc using `randomStores', nogen keep(3)
+ 31.                                 }
+ 32.                                 *Appending all modules in the same group together
+.                                 *gen fileNumber = `i'
+.                                 *local i=`i'+1
+.                                 capture append using `allGoods'
+ 33.                                 tempfile allGoods
+ 34.                                 save `allGoods'
+ 35.                         }
+ 36. 
+.                         *Reformatting date
+.                         tostring week_end, replace
+ 37.                         gen week_date = date(week_end, "YMD")
+ 38.                         format week_date %td
+ 39.                         gen month = month(week_date)
+ 40.                         
+.                         *Creating total units sold and price change variables
+.                         gen total_units = units*prmult
+ 41.                         gen unit_price = price/prmult
+ 42.                         gen lnunit_price = log(unit_price)                      
+ 43.                         sort store_code_uc upc month week_date
+ 44.                         //Average price excluding Feb, march, December and November
+.                         by store_code_uc upc: egen avg_price_temp = mean(unit_price) 
+ 45.                                 ///if month != 2 & month != 3 & month != 11 & month!= 12 //TODO: Do we want to exclude any month
+> s from the average prices?
+>                         by store_code_uc upc: egen avg_price = max(avg_price_temp)
+ 46.                         gen lnavg_price = log(avg_price)
+ 47.                         gen price_change = lnunit_price - lnavg_price           
+ 48.                                 
+.                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                         
+.                         tempfile allGoods
+ 49.                         save `allGoods'
+ 50.                 
+.                         *Merging with stores and zipcode incomes. 
+.                         import delimited "`nielsenDir'/RMS/`yr'/Annual_Files/stores_2014.tsv", clear                    
+ 51.                         merge 1:m store_code_uc using `allGoods', keep(3) nogen
+ 52.                         merge m:1 store_zip3 using "$dataSTATA/incomePercentiles", nogen keep(3)
+ 53.                         merge m:1 store_zip3 using "$dataSTATA/takeupPercentiles", nogen keep(3)
+ 54.                         tempfile goodsAndIncome
+ 55.                         save `goodsAndIncome'   
+ 56.                         
+.                         *getting total units sold of appliances by week 
+.                         collapse (sum) total_units (first) month, by(week_date)
+ 57.                         gen lntotal_units = log(total_units)
+ 58.                         reg lntotal_units i.month, robust //is it better to plot coefficients?
+ 59.                         twoway scatter lntotal_units week_date, ///
+>                                 title("Number of appliance units purchased") 
+ 60.                         graph export "`figuresDir'/productGroup`productGroup'_years_`yr'_PS`percentSample'.pdf", as(eps) replace
+ 61.                         
+.                         *****Income percentiles*********************
+.                         *Bottom percentile consumption
+.                         use `goodsAndIncome', clear
+ 62.                         collapse (sum) total_units = total_units if bottom`bottomPercentile' == 1, by(week_date)
+ 63.                         gen lntotal_units = log(total_units)
+ 64.                         twoway scatter lntotal_units week_date, ///
+>                                 title("Number of appliance units purchased") note("Bottom `bottomPercentile' Percentile") name(bott
+> omCons)
+ 65.                         *graph export "`figuresDir'/productGroup`productGroup'_years_`yr'_lowincome`bottomPercentile'_PS`percent
+> Sample'.pdf", replace 
+.                         
+.                         *Top percentle consumption
+.                         use `goodsAndIncome', clear
+ 66.                         collapse (sum) total_units = total_units if top`topPercentile' == 1, by(week_date)
+ 67.                         gen lntotal_units = log(total_units)
+ 68.                         twoway scatter lntotal_units week_date, ///
+>                                 title("Number of appliance units purchased") note("Top `topPercentile' Percentile") name(topCons)
+ 69.                         *graph export "`figuresDir'/productGroup`productGroup'_years_`yr'_highincome`topPercentile'_PS`percentSa
+> mple'.pdf", replace
+.                         
+.                         graph combine bottomCons topCons, title("Consumption in bottom and top percentile of income") col(1) 
+ 70.                         graph export "`figuresDir'/productGroup`productGroup'_years_`yr'_highincome`topPercentile'_lowincome`bot
+> tomPercentile'_PS`percentSample'.pdf", replace
+ 71.                         
+.                         *Bottom percentile price changes
+.                         use `goodsAndIncome', clear
+ 72.                         collapse (mean) price_change if bottom`bottomPercentile' == 1, by(week_date)
+ 73. 
+.                         twoway scatter price_change week_date, ///
+>                                 title("Average percentage change of prices for appliances") note("Bottom `bottomPercentile' Percent
+> ile") ///
+>                                 ytitle("Percentage price change") xlabel(#13) name(bottomPrice)
+ 74.                         *graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_lowincome`bottomPercentile
+> '_PS`percentSample'.pdf", replace 
+.                         
+.                         *Top percentile price changes
+.                         use `goodsAndIncome', clear
+ 75.                         collapse (mean) price_change if top`topPercentile' == 1, by(week_date)
+ 76.                         twoway scatter price_change week_date, ///
+>                                 title("Average percentage change of prices for appliances") note("Top `topPercentile' Percentile") 
+> ///
+>                                 ytitle("Percentage price change") xlabel(#13) name(topPrice)
+ 77.                         *graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_highincome`topPercentile'_
+> PS`percentSample'.pdf", replace 
+.                         graph combine bottomPrice topPrice, title("Price changes in top and bottom percentile of income") col(1)
+ 78.                         graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_highincome`topPercentile'_l
+> owincome`bottomPercentile'_PS`percentSample'.pdf", replace
+ 79.                         
+.                         ********EITC rate percentiles
+.                         *Bottom percentile consumption
+.                         use `goodsAndIncome', clear
+ 80.                         collapse (sum) total_units = total_units if bottom`bottomPercentile'eitc == 1, by(week_date)
+ 81.                         gen lntotal_units = log(total_units)
+ 82.                         twoway scatter lntotal_units week_date, ///
+>                                 title("Number of appliance units purchased") ///
+>                                 note("Bottom `bottomPercentile' Percentile, eitc take up rates") name(bottomConseitc)
+ 83.                         
+.                         *Top percentle consumption
+.                         use `goodsAndIncome', clear
+ 84.                         collapse (sum) total_units = total_units if top`topPercentile'eitc == 1, by(week_date)
+ 85.                         gen lntotal_units = log(total_units)
+ 86.                         twoway scatter lntotal_units week_date, ///
+>                                 title("Number of appliance units purchased") ///
+>                                 note("Top `topPercentile' Percentile by eitc takeup rates") name(topConseitc)
+ 87.                         
+.                         graph combine topConseitc bottomConseitc, title("Consumption in bottom and top percentile of eitc takeup") 
+> col(1) 
+ 88.                         graph export "`figuresDir'/productGroup`productGroup'_years_`yr'_higheitc`topPercentile'_loweitc`bottomP
+> ercentile'_PS`percentSample'.pdf", replace
+ 89.                         
+.                         *Bottom percentile price changes
+.                         use `goodsAndIncome', clear
+ 90.                         collapse (mean) price_change if bottom`bottomPercentile'eitc == 1, by(week_date)
+ 91. 
+.                         twoway scatter price_change week_date, ///
+>                                 title("Average percentage change of prices for appliances") ///
+>                                 note("Bottom `bottomPercentile' Percentile eitc take up rate") ///
+>                                 ytitle("Percentage price change") xlabel(#13) name(bottomPriceeitc)
+ 92.                         *graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_lowincome`bottomPercentile
+> '_PS`percentSample'.pdf", replace 
+.                         
+.                         *Top percentile price changes
+.                         use `goodsAndIncome', clear
+ 93.                         collapse (mean) price_change if top`topPercentile'eitc == 1, by(week_date)
+ 94.                         twoway scatter price_change week_date, ///
+>                                 title("Average percentage change of prices for appliances") ///
+>                                 note("Top `topPercentile' Percentile. Eitc take up rate") ///
+>                                 ytitle("Percentage price change") xlabel(#13) name(topPriceeitc)
+ 95.                         *graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_highincome`topPercentile'_
+> PS`percentSample'.pdf", replace 
+.                         graph combine topPriceeitc bottomPriceeitc, title("Price changes in top and bottom percentile of eitc takeu
+> p") col(1)
+ 96.                         graph export "`figuresDir'/priceChange_productGroup`productGroup'_years_`yr'_higheitc`topPercentile'_low
+> eitc`bottomPercentile'_PS`percentSample'.pdf", replace
+ 97.                         
+.                 }
+ 98.         }
+ 99.         
+.         
+.  end
+
+.  
+.  /*---------------------------------------------------------*/
+.  /* Creating a random sample of scanner data         */
+.  /*--------------------------------------------------------*/
+.  capture program drop randomSampleScanner
+
+.  program define randomSampleScanner
+  1.  syntax[, nielsenDir(string) otherDataDir(string) years(string) ///
+>         productGroup(string) percentSample(integer 5)]
+  2.         
+.                 foreach yr in `years'{
+  3.                 foreach group in `productGroup'{
+  4.                         cd "`nielsenDir'/RMS/`yr'/Movement_Files/`group'_`yr'"
+  5.                         local files: dir . files "*.tsv" 
+  6.                         local i = 1
+  7.                         foreach file in `files' { 
+  8.                                 display "`file'"
+  9.                                 import delimited "`file'", clear                                
+ 10.                                 *taking a random sample
+.                                 if `percentSample' != 100{
+ 11.                                         set seed 2038947        
+ 12.                                         gen randomNumber = runiform()
+ 13.                                         gen percentSample = `percentSample'/100
+ 14.                                         drop if randomNumber > percentSample
+ 15.                                         drop randomNumber percentSample
+ 16.                                 }
+ 17.                                 compress
+ 18.                                 local fileName=regexr("`file'", ".tsv","")
+ 19.                                 di "`fileName'"
+ 20.                         
+.                                 save "`otherDataDir'/scannerRandomSamples/`yr'/`group'_`fileName'_percent`percentSample'", replace
+ 21.                                 
+.                                 }
+ 22.                         }
+ 23.                 }
+ 24.                 
+. 
+.  end
+
+.  
+.  
+. /*---------------------------------------------------------*/
+.  /* Summary statistics on durable goods                    */
+.  /*--------------------------------------------------------*/
+.  capture program drop sumStatsDurables
+
+.  program define sumStatsDurables
+  1.  syntax[, nielsenDir(string) otherDataDir(string) years(string) ///
+>         productGroup(string) percentSample(integer 5) ///
+>         bottomPercentile(integer 10) topPercentile(integer 10)]
+  2.         
+.         *Iterating through years, product groups, then files within each product group
+.         //getting the first and last years specified. 
+.         local counter = 0
+  3.         foreach year in `years'{
+  4.                 local counter `=`counter'+1'
+  5.                 if `counter' == 1{
+  6.                         local firstYear = "`year'"
+  7.                 }
+  8.                 local yearPresent = "`year'"
+  9.         }
+ 10.         foreach yr in `years'{
+ 11.                 *Getting a random sample of stores if we are debugging
+.                 if `percentSample' != 100{
+ 12.                         set seed 2038947
+ 13.                         import delimited "`nielsenDir'/RMS/`yr'/Annual_Files/stores_`yr'.tsv", clear                    
+ 14.                         contract store_code_uc
+ 15.                         gen randomNumber = runiform()
+ 16.                         gen percentSample = `percentSample'/100
+ 17.                         drop if randomNumber > percentSample
+ 18.                         drop randomNumber percentSample _freq
+ 19.                         tempfile randomStores
+ 20.                         save `randomStores'                     
+ 21.                 }
+ 22.                 
+.                 foreach group in `productGroup'{
+ 23.                         *Creating a dataset that will contain the summaryStats
+.                         clear
+ 24.                         set obs 1
+ 25.                         gen dummy = 1
+ 26.                         tempfile sumStats
+ 27.                         save `sumStats', replace
+ 28.                         
+.                         *iterating over all the modules in the group
+.                         cd "`nielsenDir'/RMS/`yr'/Movement_Files/`group'_`yr'"
+ 29.                         local files: dir . files "*.tsv" 
+ 30.                         local i = 1
+ 31.                         foreach file in `files' { 
+ 32.                                 display "`file'"
+ 33.                                 import delimited "`file'", clear
+ 34.                                 
+.                                 *Only keeping the random sample determined above
+.                                 if `percentSample' != 100{
+ 35.                                         merge m:1 store_code_uc using `randomStores', nogen keep(3)
+ 36.                                 }
+ 37.                                 
+.                                 *Average number of goods purchased each week in a zipcode
+.                                 preserve        
+ 38.                                         import delimited "`nielsenDir'/RMS/`yr'/Annual_Files/stores_`yr'.tsv", clear
+ 39.                                         tempfile stores
+ 40.                                         save `stores'
+ 41.                                 restore
+ 42.                                 merge m:1 store_code_uc using `stores', keep(3) nogen
+ 43.                                 egen total_units = total(units*prmult)
+ 44.                                 sum total_units
+ 45.                                 local total_units = r(mean)
+ 46.                                 bys week_end: gen index = _n
+ 47.                                 bys store_zip3: gen index2 = _n
+ 48.                                 count if index ==  1
+ 49.                                 local num_wks = r(N)
+ 50.                                 count if index2 == 1
+ 51.                                 local num_zip = r(N)
+ 52.                                 local avg_units = `total_units'/`num_wks'/`num_zip'
+ 53.                                 drop index*
+ 54.                                 
+.                                 *Appending all modules in the same group together
+.                                 *gen fileNumber = `i'
+.                                 *local i=`i'+1
+.                                 capture append using `allGoods'
+ 55.                                 tempfile allGoods
+ 56.                                 save `allGoods'
+ 57.                                 
+.                                 *Inputting average number of goods into results dataset                         
+.                                 use "`sumStats'", clear
+ 58.                                 local fileName=regexr("`file'", ".tsv","")
+ 59.                                 di "`fileName'"
+ 60.                                 gen v`fileName' = `avg_units'
+ 61.                                 save "`sumStats'", replace
+ 62.                                 
+.                         }       
+ 63.         
+.                         *Calculating the number of goods a week for a group (eg Household appliances)
+.                         use `allGoods', clear
+ 64.                         *Reformatting date
+.                         tostring week_end, replace
+ 65.                         gen week_date = date(week_end, "YMD")
+ 66.                         format week_date %td
+ 67.                         gen month = month(week_date)
+ 68.                         
+.                         *Creating total units sold 
+.                         gen week_units = units*prmult                                                                              
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                                                                                                    
+>                                                        
+ 69.         
+.                 
+.                         *Merging with stores and zipcode incomes.       
+.                         merge m:1 store_zip3 using "$dataSTATA/incomePercentiles", nogen keep(3)
+ 70.                         merge m:1 store_zip3 using "$dataSTATA/takeupPercentiles", nogen keep(3)
+ 71.                         tempfile goodsAndIncome
+ 72.                         save `goodsAndIncome'   
+ 73.                         
+.                         *getting average number of appliances in a zipcode every week   
+.                         bys store_zip3: gen index2 = _n
+ 74.                         count if index2 ==  1
+ 75.                         local numZip = r(N)
+ 76.                         collapse (sum) week_units (first) month, by(week_date)
+ 77.                         gen zip_wk_units = week_units/`numZip'
+ 78.                         export excel "$tables/sumStats_yr`yr'_gr`group'_ps`percentSample'", ///
+>                                 firstrow(variables) sheet("groupWeeklyStats", replace)
+ 79.                                 
+.                         *Exporting module summary statistics
+.                         use `sumStats', clear
+ 80.                         gen description = "The average number of goods sold per week in a 3-digit zipcode area"
+ 81.                         gen group = "`group'"
+ 82. 
+.                         export excel "$tables/sumStats_yr`yr'_gr`group'_ps`percentSample'", ///
+>                                 firstrow(variables) sheet("Module stats", replace)
+ 83.         
+.                 }
+ 84.         }
+ 85.  end
+
+. /*---------------------------------------------------------*/
+.  /* Run Main Program                                       */
+.  /*--------------------------------------------------------*/
+. 
+. 
+. main
+  -------------------------------------------------------------------------------------------------------------------- begin main ---
+  - paths
+    ----------------------------------------------------------------------------------------------------------------- begin paths ---
+    - global dataRAW "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataRAW/"
+    - global dataCLEAN "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN/"
+    - global code "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code"
+    - local c_date = c(current_date)
+    - local c_time = c(current_time)
+    - local c_time_date = "`c_date'"+"_"+"`c_time'"
+    = local c_time_date = "18 Nov 2017"+"_"+"21:14:26"
+    - local time_string = subinstr("`c_time_date'", ":", "_", .)
+    = local time_string = subinstr("18 Nov 2017_21:14:26", ":", "_", .)
+    - local time_string = subinstr("`time_string'", " ", "_", .)
+    = local time_string = subinstr("18 Nov 2017_21_14_26", " ", "_", .)
+    - local c_date = c(current_date)
+    - local c_time = c(current_time)
+    - local c_time_date = "`c_date'"+"_"+"`c_time'"
+    = local c_time_date = "18 Nov 2017"+"_"+"21:14:26"
+    - local time_string = subinstr("`c_time_date'", ":", "_", .)
+    = local time_string = subinstr("18 Nov 2017_21:14:26", ":", "_", .)
+    - local time_string = subinstr("`time_string'", " ", "_", .)
+    = local time_string = subinstr("18 Nov 2017_21_14_26", " ", "_", .)
+    - capture log close

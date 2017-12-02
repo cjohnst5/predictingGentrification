@@ -1,0 +1,140 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_45_28.log
+  log type:  text
+ opened on:  18 Nov 2017, 21:45:28
+    ------------------------------------------------------------------------------------------------------------------- end paths ---
+  - mergeCleanData
+    -------------------------------------------------------------------------------------------------------- begin mergeCleanData ---
+    - use "$dataCLEAN/redfin_censustractsCLEAN.dta", clear
+    = use "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfin_censustractsCLEAN.dta", clear
+    - merge m:1 tractID using "$dataCLEAN/nhgisVariables.dta", nogen keep(3)
+    = merge m:1 tractID using "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//nhgisVariables.dt
+> a", nogen keep(3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               194  
+    -----------------------------------------
+    - rename totalPop totTractPop
+    - bys redfinID: egen totRFPop = sum(totTractPop)
+    - gen popWeight = totTractPop/totRFPop
+    - order totTractPop totRFPop popWeight prcntHisp prcntHigh bachelor
+    - collapse (mean) prcnt* medianInc [w=totTractPop], by(redfinID)
+(analytic weights assumed)
+    - tempfile NHGIS
+    - save `NHGIS', replace
+    = save C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp, replace
+(note: file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp not found)
+file C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp saved
+    - import delimited "$dataCLEAN/redfinPercentChange.csv", clear
+    = import delimited "C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/dataCLEAN//redfinPercentChange.csv"
+> , clear
+(4 vars, 67 obs)
+    - rename redfinid redfinID
+    - merge 1:1 redfinID using `NHGIS'
+    = merge 1:1 redfinID using C:\Users\DANIEL~2\AppData\Local\Temp\ST_07000001.tmp
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                                67  (_merge==3)
+    -----------------------------------------
+    - foreach var of varlist prcnt*{
+    - replace `var' = `var'*100
+    = replace prcntHisp = prcntHisp*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntHighEdu = prcntHighEdu*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntUnder18 = prcntUnder18*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcnt18_29 = prcnt18_29*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcnt30_44 = prcnt30_44*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcnt45_64 = prcnt45_64*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcnt65plus = prcnt65plus*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntWhite = prcntWhite*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntBlack = prcntBlack*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntAsian = prcntAsian*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntSnglMom = prcntSnglMom*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntHusWifeFam = prcntHusWifeFam*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntHusWifeChild = prcntHusWifeChild*100
+(67 real changes made)
+    - }
+    - replace `var' = `var'*100
+    = replace prcntRentOcc = prcntRentOcc*100
+(67 real changes made)
+    - }
+    - reg gen_factor prcnt* medianInc
+note: prcnt65plus omitted because of collinearity
+
+      Source |       SS           df       MS      Number of obs   =        67
+-------------+----------------------------------   F(14, 52)       =      3.96
+       Model |  1.37986108        14  .098561506   Prob > F        =    0.0001
+    Residual |  1.29432405        52  .024890847   R-squared       =    0.5160
+-------------+----------------------------------   Adj R-squared   =    0.3857
+       Total |  2.67418513        66  .040517957   Root MSE        =    .15777
+
+-----------------------------------------------------------------------------------
+       gen_factor |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+        prcntHisp |  -.0083433   .0057971    -1.44   0.156     -.019976    .0032894
+     prcntHighEdu |   .0060148   .0060396     1.00   0.324    -.0061047    .0181342
+     prcntUnder18 |   .0380891   .0200599     1.90   0.063    -.0021641    .0783422
+       prcnt18_29 |    .005961   .0084734     0.70   0.485     -.011042    .0229641
+       prcnt30_44 |   .0015306   .0069008     0.22   0.825     -.012317    .0153781
+       prcnt45_64 |   .0152783   .0108815     1.40   0.166     -.006557    .0371136
+      prcnt65plus |          0  (omitted)
+       prcntWhite |   -.016378   .0128826    -1.27   0.209    -.0422288    .0094728
+       prcntBlack |  -.0140424   .0121843    -1.15   0.254     -.038492    .0104072
+       prcntAsian |  -.0184617   .0123567    -1.49   0.141    -.0432573    .0063339
+     prcntSnglMom |  -.0102939   .0210623    -0.49   0.627    -.0525585    .0319707
+  prcntHusWifeFam |    .002926   .0101752     0.29   0.775    -.0174921     .023344
+prcntHusWifeChild |   -.026614   .0101868    -2.61   0.012    -.0470554   -.0061727
+     prcntRentOcc |  -.0006838   .0027812    -0.25   0.807    -.0062647    .0048971
+        medianInc |  -4.74e-06   3.78e-06    -1.25   0.215    -.0000123    2.84e-06
+            _cons |   2.096475   1.645624     1.27   0.208    -1.205711     5.39866
+-----------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------- end mergeCleanData ---
+  ---------------------------------------------------------------------------------------------------------------------- end main ---
+
+. //main program
+. log close
+      name:  <unnamed>
+       log:  C:/Users/Daniel and Carla/Dropbox/projects/predictingGentrification/build/code/logFiles/build18_Nov_2017_21_45_28.log
+  log type:  text
+ closed on:  18 Nov 2017, 21:45:29
+-------------------------------------------------------------------------------------------------------------------------------------
